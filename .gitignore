@@ -1,0 +1,10 @@
+debug/*
+release/*
+
+Makefile*
+
+.qmake*
+
+*.pro.user
+
+ui_mainwindow.h
