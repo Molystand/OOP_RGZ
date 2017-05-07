@@ -1,10 +1,10 @@
-debug/*
+*debug
 *release
 
 Makefile*
 
 .qmake*
 
-*.pro.user
+*.pro.user*
 
 ui_mainwindow.h

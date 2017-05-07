@@ -24,11 +24,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+    game_widget.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += \
+    game_widget.h \
+    matrix.h
 
-FORMS    += mainwindow.ui
+FORMS    +=
 
 DISTFILES += \
     .gitignore
