@@ -7,8 +7,8 @@
 #include <qmath.h>
 #include "game_widget.h"
 
-Game_widget::Game_widget(QWidget *parent) :
-    QWidget(parent),
+Game_of_life::Game_of_life(QWidget *parent) :
+    Game_widget(parent),
     timer(new QTimer(this)),
     universe_size(50)
 {
@@ -26,7 +26,7 @@ Game_widget::Game_widget(QWidget *parent) :
     //(*universe)(1, 1) = (*universe)(1, 3) = true;
 }
 
-Game_widget::~Game_widget()
+Game_of_life::~Game_of_life()
 {
     delete universe;
     delete next_universe;
@@ -34,20 +34,20 @@ Game_widget::~Game_widget()
 
 //------------------------------------------------------
 
-void Game_widget::start_game()
+void Game_of_life::start_game()
 {
 //    qDebug() << "start";
     timer->start();
 }
 
-void Game_widget::stop_game()
+void Game_of_life::stop_game()
 {
 //    qDebug() << "stop";
     timer->stop();
 }
 
 // Очистить поле
-void Game_widget::clear()
+void Game_of_life::clear()
 {
     // Останавливаем игру
     stop_game();
@@ -67,7 +67,7 @@ void Game_widget::clear()
 //------------------------------------------------------
 
 // Отрисовка игры
-void Game_widget::paintEvent(QPaintEvent* event)
+void Game_of_life::paintEvent(QPaintEvent* event)
 {
     QPainter p(this);   // Рисовать будем на вызывающем виджете (виджете игры)
     paint_grid(p);      // Рисуем сетку
@@ -75,7 +75,7 @@ void Game_widget::paintEvent(QPaintEvent* event)
 }
 
 // Отрисовка сетки
-void Game_widget::paint_grid(QPainter& p)
+void Game_of_life::paint_grid(QPainter& p)
 {
     QRect borders(0, 0, width() - 1, height() - 1);     // Граница
     QColor grid_color = main_color_;                     // Цвет сетки
@@ -96,7 +96,7 @@ void Game_widget::paint_grid(QPainter& p)
 }
 
 // Отрисовка клеток
-void Game_widget::paint_universe(QPainter& p)
+void Game_of_life::paint_universe(QPainter& p)
 {
     double cell_width = (double)width() / universe_size;    // Ширина клетки
     double cell_height = (double)height() / universe_size;  // Высота клетки
@@ -122,7 +122,7 @@ void Game_widget::paint_universe(QPainter& p)
 //------------------------------------------------------
 
 // Нажатие кнопки мыши
-void Game_widget::mousePressEvent(QMouseEvent *event)
+void Game_of_life::mousePressEvent(QMouseEvent *event)
 {
     // Отправляем сигнал, что состояние клетки изменилось
     emit environment_changed(true);
@@ -148,7 +148,7 @@ void Game_widget::mousePressEvent(QMouseEvent *event)
 }
 
 // Перемещение мыши при зажатой кнопке мыши
-void Game_widget::mouseMoveEvent(QMouseEvent *event)
+void Game_of_life::mouseMoveEvent(QMouseEvent *event)
 {
     double cell_width  = (double)width()  / universe_size;  // Ширина клетки
     double cell_height = (double)height() / universe_size;  // Высота клетки
@@ -185,7 +185,7 @@ void Game_widget::mouseMoveEvent(QMouseEvent *event)
 //---------------------------------------------------------------
 
 // Жива ли клетка
-bool Game_widget::is_alive(int k, int r)
+bool Game_of_life::is_alive(int k, int r)
 {
     int power = 0;  // Количество "живых" соседей клетки
 
@@ -244,7 +244,7 @@ bool Game_widget::is_alive(int k, int r)
 }
 
 // Обновляет поколение в universe
-void Game_widget::new_generation()
+void Game_of_life::new_generation()
 {
     int not_changed = 0;      // Количество клеток, не изменивших состояние
 
@@ -282,25 +282,25 @@ void Game_widget::new_generation()
 //------------------------------------------------------
 
 // Возвращает интервал между поколениями
-int Game_widget::interval()
+int Game_of_life::interval()
 {
     return timer->interval();
 }
 
 // Установить интервал
-void Game_widget::set_interval(int msec)
+void Game_of_life::set_interval(int msec)
 {
     timer->setInterval(msec);
 }
 
 // Возвращает цвет клетки
-QColor Game_widget::main_color()
+QColor Game_of_life::main_color()
 {
     return main_color_;
 }
 
 // Установить цвет клетки
-void Game_widget::set_main_color(const QColor &color)
+void Game_of_life::set_main_color(const QColor &color)
 {
     // Устанавливаем новый цвет
     main_color_ = color;
@@ -309,13 +309,13 @@ void Game_widget::set_main_color(const QColor &color)
 }
 
 // Возвращает размер поля
-int Game_widget::cell_number()
+int Game_of_life::cell_number()
 {
     return universe_size;
 }
 
 // Установка размера поля
-void Game_widget::set_cell_number(int size)
+void Game_of_life::set_cell_number(int size)
 {
     // Устанавливаем новый размер
     universe_size = size;
@@ -328,7 +328,7 @@ void Game_widget::set_cell_number(int size)
 //---------------------------------------------------------------
 
 // Сброс поля в исходное состояние
-void Game_widget::reset_universe()
+void Game_of_life::reset_universe()
 {
     delete universe;
     delete next_universe;
