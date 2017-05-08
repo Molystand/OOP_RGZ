@@ -3,7 +3,7 @@
 
 #include <QColor>
 #include <QWidget>
-#include "matrix.h"
+#include "field.h"
 
 
 class Game_widget : public QWidget      /* Реализация */
@@ -113,10 +113,10 @@ private:
     QTimer* timer;                  // Время между поколениями
 
     int universe_size;              // Размер поля
-    Matrix<bool>* universe;         // Текущее поколение
-    Matrix<bool>* next_universe;    // Следующее поколение
+    Field* universe;                // Текущее поколение
+    Field* next_universe;           // Следующее поколение
 
-    bool is_alive(int k, int r);    // Жива ли клетка с координатами k,r
+    bool is_alive(int k, int r);    // Будет ли жива клетка с координатами k,r в следующем поколении
 
     void reset_universe();          // Сброс поля в исходное состояние
 };

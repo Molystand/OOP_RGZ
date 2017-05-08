@@ -25,12 +25,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
     game_widget.cpp \
-    main_window.cpp
+    main_window.cpp \
+    field.cpp
 
 HEADERS  += \
     game_widget.h \
     matrix.h \
-    main_window.h
+    main_window.h \
+    field.h
 
 FORMS    +=
 

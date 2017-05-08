@@ -14,16 +14,13 @@ Game_of_life::Game_of_life(QWidget *parent) :
 {
     timer->setInterval(100);
     main_color_ = "#000";               // Установка цвета клеток
-    universe      = new Matrix<bool>(universe_size, universe_size);
-    next_universe = new Matrix<bool>(universe_size, universe_size);
+    universe      = Field::make_field(1, universe_size);
+    next_universe = Field::make_field(1, universe_size);
 
     // Когда время таймера истекает, генерируется новое поколение
     connect(timer, SIGNAL(timeout()), this, SLOT(new_generation()));
 
     this->setMinimumSize(400, 400);     // Установка минимального размера окна виджета
-
-    //this->setMouseTracking(true);
-    //(*universe)(1, 1) = (*universe)(1, 3) = true;
 }
 
 Game_of_life::~Game_of_life()
@@ -55,7 +52,7 @@ void Game_of_life::clear()
     // Делаем все клетки "мёртвыми"
     for (int i = 0; i < universe_size; i++)
         for (int j = 0; j < universe_size; j++)
-            (*universe)(i, j) = false;
+            universe->set_alive(i, j, false);
 
     // Посылаем сигнал, что игра закончена
     game_ends(true);
@@ -105,7 +102,7 @@ void Game_of_life::paint_universe(QPainter& p)
     {
         for (int j = 0; j < universe_size; j++)
         {
-            if ((*universe)(i, j) == true)      // Если клетка жива
+            if (universe->alive(i, j))      // Если клетка жива
             {
                 // Координаты левого верхнего угла клетки
                 qreal left = (qreal)(cell_width  * (j + 1) - cell_width);
@@ -141,7 +138,7 @@ void Game_of_life::mousePressEvent(QMouseEvent *event)
         (*universe_)(i, j) = false;          // то делаем клетку "мёртвой"
     */
 
-    (*universe)(i, j) = !(*universe)(i, j);
+    universe->set_alive(i, j, !universe->alive(i, j));
 
     // Перерисовываем
     update();
@@ -162,9 +159,9 @@ void Game_of_life::mouseMoveEvent(QMouseEvent *event)
     if (i < 0 || i > universe_size - 1 || j < 0 || j > universe_size - 1)
         return;
 
-    if (!(*universe)(i, j))
+    if (!universe->alive(i, j))
     {
-        (*universe)(i, j) = true;
+        universe->set_alive(i, j, true);
         update();
     }
 
@@ -184,7 +181,7 @@ void Game_of_life::mouseMoveEvent(QMouseEvent *event)
 
 //---------------------------------------------------------------
 
-// Жива ли клетка
+// Будет ли жива клетка в следующем поколении
 bool Game_of_life::is_alive(int k, int r)
 {
     int power = 0;  // Количество "живых" соседей клетки
@@ -209,7 +206,7 @@ bool Game_of_life::is_alive(int k, int r)
             else if (j == universe_size)
                 temp_j = 0;
 
-            if ((*universe)(temp_i, temp_j) == true &&
+            if (universe->alive(temp_i, temp_j) &&
                     !(temp_i == k && temp_j == r))           /* Если клетка "живая" и не является исходной*/
                 power++;
         }
@@ -238,7 +235,7 @@ bool Game_of_life::is_alive(int k, int r)
 
     // Клетка останется живой, если у неё 2 или 3 соседа, и оживёт, если у неё ровно 3 соседа
     if ((power == 3) ||
-            (((*universe)(k, r) == true) && (power == 2)))
+            ((universe->alive(k, r)) && (power == 2)))
         return true;
     return false;
 }
@@ -251,9 +248,9 @@ void Game_of_life::new_generation()
     for (int i = 0; i < universe_size; i++)
         for (int j = 0; j < universe_size; j++)
         {
-            (*next_universe)(i, j) = is_alive(i, j);            // Обновляем клетку в новом поколении
-            if ((*next_universe)(i, j) == (*universe)(i, j))    // Если клетка не изменила состояние,
-                not_changed++;                                  // увеличиваем счётчик
+            next_universe->set_alive(i, j, is_alive(i, j));                    // Обновляем клетку в новом поколении
+            if (next_universe->alive(i, j) == universe->alive(i, j))    // Если клетка не изменила состояние,
+                not_changed++;                                          // увеличиваем счётчик
         }
 
     // Игра окончена, если ни одна клетка не изменила состояния
@@ -274,7 +271,10 @@ void Game_of_life::new_generation()
     }
 
     // Следующее поколение теперь текущее
-    (*universe) = (*next_universe);
+    for (int i = 0; i < universe_size; i++)
+        for (int j = 0; j < universe_size; j++)
+            universe->set_alive(i, j, next_universe->alive(i, j));
+
     // Перерисовываем
     update();
 }
@@ -332,6 +332,6 @@ void Game_of_life::reset_universe()
 {
     delete universe;
     delete next_universe;
-    universe      = new Matrix<bool>(universe_size, universe_size);
-    next_universe = new Matrix<bool>(universe_size, universe_size);
+    universe      = Field::make_field(1, universe_size);
+    next_universe = Field::make_field(1, universe_size);
 }
