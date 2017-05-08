@@ -1,5 +1,6 @@
 #include <QtWidgets>
 #include "game_widget.h"
+#include "main_window.h"
 
 int main(int argc, char *argv[])
 {
@@ -7,6 +8,7 @@ int main(int argc, char *argv[])
     {
     QApplication a(argc, argv);
     QWidget w;
+    Main_window* st = new Standard_game;
     Game_widget* game = new Game_of_life;
 
     // Старт/стоп/сброс
