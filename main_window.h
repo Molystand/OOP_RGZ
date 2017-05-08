@@ -1,9 +1,10 @@
 #ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
 
-#include <QtWidgets>
+#include <QWidget>
 
 class Game_widget;
+
 
 class Main_window : public QWidget      /* Абстракция */
 {
