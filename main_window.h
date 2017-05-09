@@ -16,6 +16,7 @@ public:
 signals:
 
 public slots:
+    void select_cell_color();
 
 protected:
     Game_widget* game;

@@ -3,6 +3,8 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QSpinBox>
+#include <QColor>
+#include <QColorDialog>
 #include "main_window.h"
 #include "game_widget.h"
 
@@ -25,8 +27,7 @@ Main_window::Main_window(Game_widget* game_widget, QWidget* parent) :
     file_hlout->addWidget(save);
     file_hlout->addWidget(load);
 
-    // Вертикальная компоновка настроек
-    QVBoxLayout* setting_vlout = new QVBoxLayout;
+    // Настройки
     QLabel*      label1        = new QLabel("Размер поля", this);
     QSpinBox*    cells_num     = new QSpinBox(this);
     cells_num->setRange(5, 100);
@@ -38,7 +39,10 @@ Main_window::Main_window(Game_widget* game_widget, QWidget* parent) :
     gen_interval->setSuffix(" мсек");
     gen_interval->setValue(game->interval());
     gen_interval->setSingleStep(10);
-    QPushButton* color_button  = new QPushButton("Цвет клеток", this);
+    QPushButton* color_button  = new QPushButton("Выбрать цвет клеток", this);
+
+    // Вертикальная компоновка настроек
+    QVBoxLayout* setting_vlout = new QVBoxLayout;
     setting_vlout->addLayout(control_hlout);
     setting_vlout->addWidget(label1);
     setting_vlout->addWidget(cells_num);
@@ -76,7 +80,7 @@ Main_window::Main_window(Game_widget* game_widget, QWidget* parent) :
 //    QObject::connect(, SIGNAL(), , SLOT());
 
     // Изменение цвета клетки
-//    QObject::connect(color_button, SIGNAL(clicked()), this, SLOT());
+    connect(color_button, SIGNAL(clicked()), this, SLOT(select_cell_color()));
 }
 
 Main_window::~Main_window()
@@ -84,6 +88,21 @@ Main_window::~Main_window()
     delete game;
 }
 
-//----------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+void Main_window::select_cell_color()
+{
+    // Выбираем цвет
+    QColor color = QColorDialog::getColor(game->main_color(), this, "Выберите цвет клеток");
+    if (!color.isValid())
+        return;
+
+    // Устанавливаем цвет на поле
+    game->set_main_color(color);
+}
+
+
+//------------------------------------------------------------------------------
+
 
 Standard_game::Standard_game(QWidget* parent) : Main_window(new Game_of_life(), parent) {}

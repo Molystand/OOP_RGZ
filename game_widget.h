@@ -15,10 +15,10 @@ public:
     virtual ~Game_widget() {}
 
 signals:
-    // Отправляется при постановке клетки на поле, чтобы заблокировать изменение размера поля
-    /*virtual*/ void environment_changed(bool ok);
+    // Отправляется при изменении состояния клетки на поле, чтобы заблокировать изменение размера поля
+    void environment_changed(bool ok);
     // Отправляется, когда игра окончена, чтобы разблокировать изменение размера поля
-    /*virtual*/ void game_ends(bool ok);
+    void game_ends(bool ok);
 
 public slots:
     virtual void start_game() = 0;

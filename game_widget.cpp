@@ -75,8 +75,8 @@ void Game_of_life::paintEvent(QPaintEvent* event)
 void Game_of_life::paint_grid(QPainter& p)
 {
     QRect borders(0, 0, width() - 1, height() - 1);     // Граница
-    QColor grid_color = main_color_;                    // Цвет сетки
-    grid_color.setAlpha(10);
+    QColor grid_color = "#000";                         // Цвет сетки
+    grid_color.setAlpha(25);                            // Прозрачность
     p.setPen(grid_color);
 
     double cell_width = (double)width() / universe_size;        // Ширина клетки
