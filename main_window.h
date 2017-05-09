@@ -2,6 +2,8 @@
 #define MAIN_WINDOW_H
 
 #include <QWidget>
+#include <QSpinBox>
+#include <QPushButton>
 
 class Game_widget;
 
@@ -19,7 +21,11 @@ public slots:
     void select_cell_color();
 
 protected:
-    Game_widget* game;
+    Game_widget* game;          // Игровое поле
+
+    QSpinBox*    cells_num;     // Размер поля
+    QSpinBox*    gen_interval;  // Интервал между поколениями
+    QPushButton* color_button;  // Цвет клетки
 };
 
 

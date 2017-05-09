@@ -28,18 +28,23 @@ Main_window::Main_window(Game_widget* game_widget, QWidget* parent) :
     file_hlout->addWidget(load);
 
     // Настройки
-    QLabel*      label1        = new QLabel("Размер поля", this);
-    QSpinBox*    cells_num     = new QSpinBox(this);
+    QLabel* label1 = new QLabel("Размер поля", this);
+    cells_num      = new QSpinBox;
     cells_num->setRange(5, 100);
     cells_num->setSuffix(" кл");
     cells_num->setValue(game->cell_number());
-    QLabel*      label2        = new QLabel("Интервал между поколениями", this);
-    QSpinBox*    gen_interval  = new QSpinBox(this);
+    QLabel* label2 = new QLabel("Интервал между поколениями", this);
+    gen_interval   = new QSpinBox;
     gen_interval->setRange(50, 2000);
     gen_interval->setSuffix(" мсек");
     gen_interval->setValue(game->interval());
     gen_interval->setSingleStep(10);
-    QPushButton* color_button  = new QPushButton("Выбрать цвет клеток", this);
+
+    // Цвет клеток
+    color_button = new QPushButton("Цвет клеток");
+    QPixmap color_icon(16, 16);
+    color_icon.fill(game->main_color());
+    color_button->setIcon(QIcon(color_icon));
 
     // Вертикальная компоновка настроек
     QVBoxLayout* setting_vlout = new QVBoxLayout;
@@ -86,6 +91,9 @@ Main_window::Main_window(Game_widget* game_widget, QWidget* parent) :
 Main_window::~Main_window()
 {
     delete game;
+    delete cells_num;
+    delete gen_interval;
+    delete color_button;
 }
 
 //------------------------------------------------------------------------------
@@ -99,6 +107,11 @@ void Main_window::select_cell_color()
 
     // Устанавливаем цвет на поле
     game->set_main_color(color);
+
+    // Изменяем иконку кнопки
+    QPixmap color_icon(16, 16);
+    color_icon.fill(game->main_color());
+    color_button->setIcon(QIcon(color_icon));
 }
 
 

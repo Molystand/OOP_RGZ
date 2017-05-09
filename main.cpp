@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     {
     QApplication a(argc, argv);
 
-    Main_window* st_game = new Standard_game();
+    Main_window* st_game = new Standard_game;
     st_game->show();
 
     return a.exec();
