@@ -82,8 +82,6 @@ public slots:
     int  cell_number();                             // Возвращает размер поля
     void set_cell_number(int size);                 // Установка размера поля
 
-
-
 protected:
     void paintEvent(QPaintEvent* event);            // Отрисовка окна
     void mousePressEvent(QMouseEvent *event);       // Нажатие кнопки мыши

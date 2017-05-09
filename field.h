@@ -2,6 +2,7 @@
 #define FIELD_H
 
 #include "matrix.h"
+#include <QSet>
 
 
 enum Field_ID { Matr_field_ID, Set_field_ID };
@@ -29,7 +30,24 @@ public:
     explicit Matr_field(int size);
     ~Matr_field();
 private:
-    Matrix<bool>* field;    // Поле
+    Matrix<bool>* field;
+};
+
+
+//-------------------------------------------------------------------------------------------------
+
+
+class Set_field : public Field
+{
+public:
+    bool alive(int i, int j);
+    void set_alive(int i, int j, bool alive);
+
+    Set_field();
+    ~Set_field();
+
+private:
+    QSet<std::pair<int, int>>* field;
 };
 
 
