@@ -32,4 +32,3 @@ void Matr_field::set_alive(int i, int j, bool alive)
 {
     (*field)(i, j) = alive;
 }
-

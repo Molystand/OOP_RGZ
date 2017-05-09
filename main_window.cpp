@@ -11,34 +11,34 @@ Main_window::Main_window(Game_widget* game_widget, QWidget* parent) :
 {
     // Старт/стоп/сброс
     QHBoxLayout* control_hlout = new QHBoxLayout;
-    QPushButton* start         = new QPushButton("Старт");
-    QPushButton* stop          = new QPushButton("Стоп");
-    QPushButton* clear         = new QPushButton("Сброс");
+    QPushButton* start         = new QPushButton("Старт", this);
+    QPushButton* stop          = new QPushButton("Стоп" , this);
+    QPushButton* clear         = new QPushButton("Сброс", this);
     control_hlout->addWidget(start);
     control_hlout->addWidget(stop);
     control_hlout->addWidget(clear);
 
     // Сохранение/загрузка
     QHBoxLayout* file_hlout    = new QHBoxLayout;
-    QPushButton* save          = new QPushButton("Сохранить");
-    QPushButton* load          = new QPushButton("Загрузить");
+    QPushButton* save          = new QPushButton("Сохранить", this);
+    QPushButton* load          = new QPushButton("Загрузить", this);
     file_hlout->addWidget(save);
     file_hlout->addWidget(load);
 
     // Вертикальная компоновка настроек
     QVBoxLayout* setting_vlout = new QVBoxLayout;
-    QLabel*      label1        = new QLabel("Размер поля");
-    QSpinBox*    cells_num     = new QSpinBox;
+    QLabel*      label1        = new QLabel("Размер поля", this);
+    QSpinBox*    cells_num     = new QSpinBox(this);
     cells_num->setRange(5, 100);
     cells_num->setSuffix(" кл");
     cells_num->setValue(game->cell_number());
-    QLabel*      label2        = new QLabel("Интервал между поколениями");
-    QSpinBox*    gen_interval  = new QSpinBox;
+    QLabel*      label2        = new QLabel("Интервал между поколениями", this);
+    QSpinBox*    gen_interval  = new QSpinBox(this);
     gen_interval->setRange(50, 2000);
     gen_interval->setSuffix(" мсек");
     gen_interval->setValue(game->interval());
     gen_interval->setSingleStep(10);
-    QPushButton* color_button  = new QPushButton("Цвет клеток");
+    QPushButton* color_button  = new QPushButton("Цвет клеток", this);
     setting_vlout->addLayout(control_hlout);
     setting_vlout->addWidget(label1);
     setting_vlout->addWidget(cells_num);
@@ -87,9 +87,3 @@ Main_window::~Main_window()
 //----------------------------------------------------------------------
 
 Standard_game::Standard_game(QWidget* parent) : Main_window(new Game_of_life(), parent) {}
-    /*(
-//        #ifdef STDGAME
-        new Game_of_life(),
-//        #endif
-        parent) {}
-*/

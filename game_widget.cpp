@@ -29,7 +29,7 @@ Game_of_life::~Game_of_life()
     delete next_universe;
 }
 
-//------------------------------------------------------
+//-----------------------------------------------------------------------------------
 
 void Game_of_life::start_game()
 {
@@ -61,7 +61,7 @@ void Game_of_life::clear()
     update();
 }
 
-//------------------------------------------------------
+//-----------------------------------------------------------------------------------
 
 // Отрисовка игры
 void Game_of_life::paintEvent(QPaintEvent* event)
@@ -75,7 +75,7 @@ void Game_of_life::paintEvent(QPaintEvent* event)
 void Game_of_life::paint_grid(QPainter& p)
 {
     QRect borders(0, 0, width() - 1, height() - 1);     // Граница
-    QColor grid_color = main_color_;                     // Цвет сетки
+    QColor grid_color = main_color_;                    // Цвет сетки
     grid_color.setAlpha(10);
     p.setPen(grid_color);
 
@@ -138,6 +138,7 @@ void Game_of_life::mousePressEvent(QMouseEvent *event)
         (*universe_)(i, j) = false;          // то делаем клетку "мёртвой"
     */
 
+    // Инвертируем состояние клетки
     universe->set_alive(i, j, !universe->alive(i, j));
 
     // Перерисовываем
@@ -190,6 +191,7 @@ bool Game_of_life::is_alive(int k, int r)
     int temp_i;
     int temp_j;
 
+    // Проверяем соседей
     for (int i = k - 1; i <= k + 1; i++)
     {
         temp_i = i;
@@ -212,27 +214,6 @@ bool Game_of_life::is_alive(int k, int r)
         }
     }
 
-
-    /*for (int i = 0; i < universe_size; i++)
-    {
-        for (int j = 0; j < universe_size; j++)
-            qDebug() << (*universe)(i, j) << " ";
-        qDebug() << "\n";
-    }*/
-
-
-
-    /*
-    power += (*universe)((k+1), r);
-    power += (*universe)((k-1 + universe_size) % universe_size, r);
-    power += (*universe)(k, (r+1) % universe_size);
-    power += (*universe)(k, (r-1 + universe_size) % universe_size);
-    power += (*universe)((k+1) % universe_size, (r-1 + universe_size) % universe_size);
-    power += (*universe)((k-1 + universe_size) % universe_size, (r+1) % universe_size);
-    power += (*universe)((k-1 + universe_size) % universe_size, (r-1 + universe_size) % universe_size);
-    power += (*universe)((k+1) % universe_size, (r+1) % universe_size);
-    */
-
     // Клетка останется живой, если у неё 2 или 3 соседа, и оживёт, если у неё ровно 3 соседа
     if ((power == 3) ||
             ((universe->alive(k, r)) && (power == 2)))
@@ -248,7 +229,7 @@ void Game_of_life::new_generation()
     for (int i = 0; i < universe_size; i++)
         for (int j = 0; j < universe_size; j++)
         {
-            next_universe->set_alive(i, j, is_alive(i, j));                    // Обновляем клетку в новом поколении
+            next_universe->set_alive(i, j, is_alive(i, j));             // Обновляем клетку в новом поколении
             if (next_universe->alive(i, j) == universe->alive(i, j))    // Если клетка не изменила состояние,
                 not_changed++;                                          // увеличиваем счётчик
         }
