@@ -2,11 +2,11 @@
 
 
 // Возвращает нужное поле в соответствии с идентификатором
-Field* Field::make_field(int choise, int size)
+Field* Field::make_field(Field_ID id, int size)
 {
-    if (choise == 1)
+    if (id == Matr_field_ID)
         return new Matr_field(size);
-//    if (choise == 2)
+//    if (id == Set_field_ID)
 //        return new Set_field;
 }
 

@@ -14,8 +14,8 @@ Game_of_life::Game_of_life(QWidget *parent) :
 {
     timer->setInterval(100);
     main_color_ = "#000";               // Установка цвета клеток
-    universe      = Field::make_field(1, universe_size);
-    next_universe = Field::make_field(1, universe_size);
+    universe      = Field::make_field(Matr_field_ID, universe_size);
+    next_universe = Field::make_field(Matr_field_ID, universe_size);
 
     // Когда время таймера истекает, генерируется новое поколение
     connect(timer, SIGNAL(timeout()), this, SLOT(new_generation()));
@@ -313,6 +313,6 @@ void Game_of_life::reset_universe()
 {
     delete universe;
     delete next_universe;
-    universe      = Field::make_field(1, universe_size);
-    next_universe = Field::make_field(1, universe_size);
+    universe      = Field::make_field(Matr_field_ID, universe_size);
+    next_universe = Field::make_field(Matr_field_ID, universe_size);
 }

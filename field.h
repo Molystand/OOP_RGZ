@@ -4,11 +4,13 @@
 #include "matrix.h"
 
 
+enum Field_ID { Matr_field_ID, Set_field_ID };
+
 class Field
 {
 public:
     /* Фабричный метод */
-    static Field* make_field(int choise, int size);
+    static Field* make_field(Field_ID id, int size);
 
     virtual bool alive(int i, int j) = 0;                   // Жива ли клетка с кординатами i,j
     virtual void set_alive(int i, int j, bool alive) = 0;   // Установить для клетки с координатами i,j состояние alive
