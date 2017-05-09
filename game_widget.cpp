@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QRectF>
 #include <QPainter>
+#include <QString>
+#include <QFileDialog>
 #include <qmath.h>
 #include "game_widget.h"
 
@@ -260,7 +262,7 @@ void Game_of_life::new_generation()
     update();
 }
 
-//------------------------------------------------------
+//---------------------------------------------------------------
 
 // Возвращает интервал между поколениями
 int Game_of_life::interval()
@@ -305,6 +307,49 @@ void Game_of_life::set_cell_number(int size)
     // Перерисовываем
     update();
 }
+
+//---------------------------------------------------------------
+
+QString Game_of_life::dump()
+{
+    char ch;
+    QString str = "";
+
+    for (int i = 0; i < universe_size; i++)
+    {
+        for (int j = 0; j < universe_size; j++)
+        {
+            if (universe->alive(i, j))
+                ch = '1';
+            else
+                ch = '0';
+            str.append(ch);
+        }
+        str.append("\n");
+    }
+
+    return str;
+}
+
+void Game_of_life::set_dump(const QString& data)
+{
+    QString::const_iterator it = data.begin();
+
+    // Заполняем поле
+    for (int i = 0; i < universe_size; i++)
+    {
+        for (int j = 0; j < universe_size; j++)
+        {
+            universe->set_alive(i, j, *it == '1');
+            it++;
+        }
+        it++;
+    }
+
+    // Перерисовываем
+    update();
+}
+
 
 //---------------------------------------------------------------
 

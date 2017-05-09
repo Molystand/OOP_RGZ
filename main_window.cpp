@@ -5,6 +5,9 @@
 #include <QSpinBox>
 #include <QColor>
 #include <QColorDialog>
+#include <QString>
+#include <QFileDialog>
+#include <QTextStream>
 #include "main_window.h"
 #include "game_widget.h"
 
@@ -55,22 +58,28 @@ Main_window::Main_window(Game_widget* game_widget, QWidget* parent) :
     setting_vlout->addWidget(gen_interval);
     setting_vlout->addLayout(file_hlout);
     setting_vlout->addWidget(color_button);
-    setting_vlout->addStretch(10);
+    optional_vlout = new QVBoxLayout;       // Дополнительная компоновка
+    setting_vlout->addLayout(optional_vlout);
+    setting_vlout->addStretch(1);
 
     // Горизонтальная главная компоновка
     QHBoxLayout* main_hlout    = new QHBoxLayout;
     main_hlout->addWidget(game);
     main_hlout->addLayout(setting_vlout);
-    main_hlout->setStretchFactor(setting_vlout, 2);
+    main_hlout->setStretchFactor(game, 9);
+    main_hlout->setStretchFactor(setting_vlout, 1);
 
     this->setLayout(main_hlout);        // Выставляем компоновку для создаваемого виджета
 
 
     // Сигнально-слотовые соединения
+
+    //Старт/стоп/сброс
     connect(start, SIGNAL(clicked()), game, SLOT(start_game()));
     connect(stop,  SIGNAL(clicked()), game, SLOT(stop_game()));
     connect(clear, SIGNAL(clicked()), game, SLOT(clear()));
 
+    // Интервал, размер клеток
     connect(gen_interval, SIGNAL(valueChanged(int)), game, SLOT(set_interval(int)));
     connect(cells_num,    SIGNAL(valueChanged(int)), game, SLOT(set_cell_number(int)));
 
@@ -79,10 +88,9 @@ Main_window::Main_window(Game_widget* game_widget, QWidget* parent) :
     // Когда поле очищено, можно изменять размер
     connect(game, SIGNAL(game_ends(bool)), cells_num, SLOT(setEnabled(bool)));
 
-    // Сохранение
-//    QObject::connect(, SIGNAL(), , SLOT());
-    // Загрузка
-//    QObject::connect(, SIGNAL(), , SLOT());
+    // Сохранение/загрузка
+    QObject::connect(save, SIGNAL(clicked(bool)), this, SLOT(save_game()));
+    QObject::connect(load, SIGNAL(clicked(bool)), this, SLOT(load_game()));
 
     // Изменение цвета клетки
     connect(color_button, SIGNAL(clicked()), this, SLOT(select_cell_color()));
@@ -118,4 +126,91 @@ void Main_window::select_cell_color()
 //------------------------------------------------------------------------------
 
 
-Standard_game::Standard_game(QWidget* parent) : Main_window(new Game_of_life(), parent) {}
+Standard_game::Standard_game(QWidget* parent) : Main_window(new Game_of_life(), parent)
+{
+    /*
+    QPushButton* but = new QPushButton("Рандом", this);
+    optional_vlout->addWidget(but);
+    */
+}
+
+
+// Сохранение
+void Standard_game::save_game()
+{
+    // Останавливаем игру
+    game->stop_game();
+
+    // Выбираем и открываем файл для сохранения
+    QString file_name = QFileDialog::getSaveFileName(this, "Сохрание текущей игры",
+                                           QDir::homePath(), "Файл игры \"жизнь\" *.lif (*.lif)");
+    if (file_name.length() < 1)
+        return;
+    QFile file(file_name);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+        return;
+
+    // Записываем сведения в файл
+    QString str = QString::number(game->cell_number()) + "\n";
+    file.write(str.toUtf8());
+    file.write(game->dump().toUtf8());
+    QColor color = game->main_color();
+    QString buf = QString::number(color.red())   + " " +
+                  QString::number(color.green()) + " " +
+                  QString::number(color.blue())  + "\n";
+    file.write(buf.toUtf8());
+    buf.clear();
+    buf = QString::number(game->interval()) + "\n";
+    file.write(buf.toUtf8());
+
+    // Закрываем файл после сохранения
+    file.close();
+}
+
+// Загрузка
+void Standard_game::load_game()
+{
+    // Останавливаем игру
+    game->stop_game();
+
+    // Выбираем и открываем файл для загрузки
+    QString file_name = QFileDialog::getOpenFileName(this, "Открыть сохранённую игру",
+                                                     QDir::homePath(), "Файл игры \"жизнь\" (*lif)");
+    if (file_name.length() < 1)
+        return;
+    QFile file(file_name);
+    if (!file.open(QIODevice::ReadOnly))
+        return;
+
+    // Считываем сведения из файла
+    QTextStream in(&file);
+    int value;
+
+    in >> value;
+    cells_num->setValue(value);
+
+    game->set_cell_number(value);
+    QString dump = "";
+    for (int i = 0; i != value; i++)
+    {
+        QString temp;
+        in >> temp;
+        dump.append(temp + "\n");
+    }
+    game->set_dump(dump);
+
+    int r, g, b;    // Цвет
+    in >> r >> g >> b;
+    QColor color(r, g, b);
+    game->set_main_color(color);
+    // Меняем иконку
+    QPixmap color_icon(16, 16);
+    color_icon.fill(color);
+    color_button->setIcon(QIcon(color_icon));
+
+    int interval;
+    in >> interval;
+    gen_interval->setValue(interval);
+    game->set_interval(interval);
+}
+

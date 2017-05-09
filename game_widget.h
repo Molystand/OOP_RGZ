@@ -14,6 +14,9 @@ public:
 
     virtual ~Game_widget() {}
 
+    virtual QString dump() = 0;
+    virtual void set_dump(const QString& data) = 0;
+
 signals:
     // Отправляется при изменении состояния клетки на поле, чтобы заблокировать изменение размера поля
     void environment_changed(bool ok);
@@ -33,6 +36,9 @@ public slots:
 
     virtual int  cell_number()             = 0;                 // Возвращает размер поля
     virtual void set_cell_number(int size) = 0;                 // Установка размера поля
+
+//    virtual void save_game() = 0;       // Сохранение
+//    virtual void load_game() = 0;       // Загрузка
 
     //QString dump();     // Для сохранения
     //void set_dump();    // Для загрузки
@@ -57,6 +63,9 @@ public:
     explicit Game_of_life(QWidget *parent = 0);
     ~Game_of_life();
 
+    QString dump();
+    void set_dump(const QString& data);
+
 signals:
 
 public slots:
@@ -73,8 +82,7 @@ public slots:
     int  cell_number();                             // Возвращает размер поля
     void set_cell_number(int size);                 // Установка размера поля
 
-    //QString dump();     // Для сохранения
-    //void set_dump();    // Для загрузки
+
 
 protected:
     void paintEvent(QPaintEvent* event);            // Отрисовка окна

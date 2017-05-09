@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QSpinBox>
 #include <QPushButton>
+#include <QVBoxLayout>
 
 class Game_widget;
 
@@ -20,12 +21,17 @@ signals:
 public slots:
     void select_cell_color();
 
-protected:
-    Game_widget* game;          // Игровое поле
+    virtual void save_game() = 0;   // Сохранение
+    virtual void load_game() = 0;   // Загрузка
 
-    QSpinBox*    cells_num;     // Размер поля
-    QSpinBox*    gen_interval;  // Интервал между поколениями
-    QPushButton* color_button;  // Цвет клетки
+protected:
+    Game_widget* game;              // Игровое поле
+
+    QVBoxLayout* optional_vlout;    // Дополнительная компоновка (для дочерних классов)
+
+    QSpinBox*    cells_num;         // Размер поля
+    QSpinBox*    gen_interval;      // Интервал между поколениями
+    QPushButton* color_button;      // Цвет клетки
 };
 
 
@@ -37,6 +43,10 @@ class Standard_game : public Main_window    /* Конкретная абстра
     Q_OBJECT
 public:
     explicit Standard_game(QWidget* parent = 0);
+
+public slots:
+    void save_game();
+    void load_game();
 };
 
 
